@@ -1,0 +1,26 @@
+{
+  "name": "bamazon",
+  "version": "1.0.0",
+  "description": "Amazon-like storefront using SQL",
+  "main": "bamazonCustomer.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/meanderthal00/bamazon.git"
+  },
+  "keywords": [
+    "SQL"
+  ],
+  "author": "rjcdev",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/meanderthal00/bamazon/issues"
+  },
+  "homepage": "https://github.com/meanderthal00/bamazon#readme",
+  "dependencies": {
+    "inquirer": "^5.0.1",
+    "mysql": "^2.15.0"
+  }
+}
