@@ -26,9 +26,9 @@ function purchase(){
 
         // using a loop to display products/prices to user
         for (var i = 0; i < res.length; i++){
-            console.log('ID: ' +res[i].id + '|Product: ' + res[i].product_name + '| Department: ' + res[i].department_name + '|Price: ' + res[i].price + '|Remaining: ' + res[i].stock_quantity);
+            console.log('ID: ' +res[i].id + ' | Product: ' + res[i].product_name + ' | Department: ' + res[i].department_name + ' | Price: ' + res[i].price + ' | Remaining: ' + res[i].stock_quantity);
 
-            console.log('========================================');
+            console.log('=============================================================================================================');
         }
     })
 }
