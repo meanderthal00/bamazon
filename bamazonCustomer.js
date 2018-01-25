@@ -1,3 +1,5 @@
+// import { parse } from "querystring";
+
 // initial requires
 var mysql = require("mysql");
 var inquirer = require("inquirer");
@@ -21,7 +23,7 @@ connection.connect(function (err) {
 
 
 var stockArray = [];
-console.log("stockArrayI" + stockArray);
+// console.log("stockArrayI" + stockArray);
 
 function purchase() {
     connection.query('SELECT * FROM inventory', (err, res) => {
@@ -33,54 +35,76 @@ function purchase() {
         //     stockArray.push(res[i].item)
         // }
         // console.log(stockArray);
-    // })
-    // using a loop to display products/prices to user
-    for (var i = 0; i < res.length; i++) {
-        console.log('ID: ' + res[i].id + ' | Product: ' + res[i].product_name + ' | Department: ' + res[i].department_name + ' | Price: ' + res[i].price + ' | Remaining: ' + res[i].stock_quantity);
+        // })
+        // using a loop to display products/prices to user
+        for (var i = 0; i < res.length; i++) {
+            console.log('ID: ' + res[i].id + ' | Product: ' + res[i].product_name + ' | Department: ' + res[i].department_name + ' | Price: ' + res[i].price + ' | Remaining: ' + res[i].stock_quantity);
 
-        console.log('=============================================================================================================');
-        // console.log("stockArrayII" + stockArray);
-    }
+            console.log('=============================================================================================================');
+            // console.log("stockArrayII" + stockArray);
+        }
+        inquirer
+            .prompt([{
+                // prompt for purchase item
+                name: 'stock',
+                type: 'input',            
+                message: 'Please choose the ID number of desired item ', 
+                validate: function (value) {
+                    // validation
+                    if (isNaN(value) == false) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }               
+            }, {
+                // prompt for quantity
+                name: 'quantity',
+                type: 'input',
+                message: 'Please enter desired quantity.',
+                validate: function (value) {
+                    // validation
+                    if (isNaN(value) == false) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+            }]).then(function (answer) {
+                // pulling item object
+                for (var i = 0; i < res.length; i++) {
+                    if (res[i].id == answer.stock) {
+                        var itemChoice = res[i];
+                    }
+                }
+                // shows entire object chosen
+                console.log(itemChoice);
+
+                // stock remaining calculations
+                var stockUpdate = parseInt(itemChoice.stock_quantity) -
+                parseInt(answer.quantity);
+                console.log('the updated quantity is: '+ stockUpdate);
+                // drops out of the node function
+                // connection.end();
+
+                if (itemChoice.stock_quantity < parseInt(answer.quantity)){
+                    console.log('There are only ' + stock_quantity + ' left in stock.');
+                }
+            })
     })
+   
     // setting up inquirer
     // first prompt asks for the item number of what they want to purchase
 
-    inquirer
-        .prompt([{
-            // prompt for purchase item
-            type: 'rawlist',
-            name: 'stock',
-            message: 'Please choose the ID number of desired item ',
-            choices: [function (value) {
-                // var stockArray = [];
-                for (var i = 0; i < res.length; i++) {
-                    stockArray.push(res[i].inventory);
-                }
-                console.log(stockArray);
-                return stockArray;
-            }]
-        }, {
-            // prompt for quantity
-            name: 'quantity',
-            type: 'input',
-            message: 'Please enter desired quantity.',
-            validate: function (value) {
-                if (isNaN(value) == false) {
-                    return true;
-                } else {
-                    return false;
-                }
-            }
-        }]).then(function (answer) {
-            for (var i = 0; i < res.length; i++) {
-                if (res[i].id == answer.list) {
-                    var itemChoice = res[i];
-                }
-            }
-            console.log(itemChoice);
-
-        })
-
+    
+function getChoices (arr) {
+    // var stockArray = [];
+    for (var i = 0; i < arr.length; i++) {
+        stockArray.push(arr[i].inventory);
+    }
+    console.log(stockArray);
+    return stockArray;
+}
 
 
 
