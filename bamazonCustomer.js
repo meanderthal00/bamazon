@@ -1,5 +1,3 @@
-// import { parse } from "querystring";
-
 // initial requires
 var mysql = require("mysql");
 var inquirer = require("inquirer");
@@ -22,7 +20,7 @@ connection.connect(function (err) {
 });
 
 
-var stockArray = [];
+// var stockArray = [];
 // console.log("stockArrayI" + stockArray);
 
 function purchase() {
@@ -31,24 +29,19 @@ function purchase() {
         if (err) throw err;
         console.log("Here is a list of avaliable items:");
         console.log('=============================================================================================================');
-        // for (var i = 0; i < res.length; i++) {
-        //     stockArray.push(res[i].item)
-        // }
-        // console.log(stockArray);
-        // })
+
         // using a loop to display products/prices to user
         for (var i = 0; i < res.length; i++) {
             console.log('ID: ' + res[i].id + ' | Product: ' + res[i].product_name + ' | Department: ' + res[i].department_name + ' | Price: ' + res[i].price + ' | Remaining: ' + res[i].stock_quantity);
 
             console.log('=============================================================================================================');
-            // console.log("stockArrayII" + stockArray);
         }
         inquirer
             .prompt([{
                 // prompt for purchase item
                 name: 'stock',
-                type: 'input',            
-                message: 'Please choose the ID number of desired item ', 
+                type: 'input',
+                message: 'Please choose the ID number of desired item ',
                 validate: function (value) {
                     // validation
                     if (isNaN(value) == false) {
@@ -56,7 +49,7 @@ function purchase() {
                     } else {
                         return false;
                     }
-                }               
+                }
             }, {
                 // prompt for quantity
                 name: 'quantity',
@@ -78,56 +71,67 @@ function purchase() {
                     }
                 }
                 // shows entire object chosen
+                console.log("~~~~~~~~~~~~~~~~~~~~~~~~");
                 console.log(itemChoice);
+                console.log("~~~~~~~~~~~~~~~~~~~~~~~~");
+
+                // determine if the inventory avaliable will fill the order
 
                 // stock remaining calculations
                 var stockUpdate = parseInt(itemChoice.stock_quantity) -
-                parseInt(answer.quantity);
-                console.log('the updated quantity is: '+ stockUpdate);
-                // drops out of the node function
-                // connection.end();
+                    parseInt(answer.quantity);
+                console.log('oooooooooooooooooooooooooooo');
+                console.log('the updated quantity is: ' + stockUpdate);
+                console.log('oooooooooooooooooooooooooooo');
 
-                if (itemChoice.stock_quantity < parseInt(answer.quantity)){
-                    console.log('There are only ' + stock_quantity + ' left in stock.');
+                // IF NOT: clg an "Insuffecient Inventory" notification, and prevent the order from being placed.
+
+                if (itemChoice.stockUpdate < parseInt(answer.quantity)) {
+                    console.log('There are only ' + stockUpdate + ' left in stock.');
+
+                    // IF SO: Complete the customer's order and perform the following functions:
+                    // Update the SQL database to reflect the remaining quantity of inventory.
+
+                } else {
+                    connection.query('UPDATE inventory SET ? WHERE ?', [{
+                            stockUpdate: stockUpdate
+                        }, {
+                            id: itemChoice.id
+                        }],
+                        function (err, res) {
+                            console.log("Purchase completed");
+                            // Upon update of quantity, show the customer the total cost of the purchase.
+                            var orderTotal = (parseInt(answer.quantity) * itemChoice.price).toFixed(2);
+                            console.log("Order Total is $" + orderTotal);
+
+                            repeat();
+
+
+
+                        });
                 }
             })
     })
-   
-    // setting up inquirer
-    // first prompt asks for the item number of what they want to purchase
-
-    
-function getChoices (arr) {
-    // var stockArray = [];
-    for (var i = 0; i < arr.length; i++) {
-        stockArray.push(arr[i].inventory);
-    }
-    console.log(stockArray);
-    return stockArray;
-}
-
-
-
-
-
-
 
 }
 
+function repeat() {
+    inquirer.prompt({
+        name: "another",
+        type: "list",
+        choices: ["Yes", "No"],
+        message: "Would you like to purchase another item?"
+    }).then(function (answer) {
+        if (answer.another == "Yes") {
+            purchase();
+        } else {
+            console.log("Thanks for using Bamazon!");
+        }
+
+    });
+} //    connection.end();
 
 
-
-
-
-
-// the second prompt asks for a quantity
-
-// upon order placement app needs to preform the following functions:
-
-// determine if the inventory avaliable will fill the order
-// IF NOT: clg an "Insuffecient Inventory" notification, and prevent the order from being placed.
-
-// IF SO: Complete the customer's order and perform the following functions:
-// Update the SQL database to reflect the remaining quantity of inventory.
-
-// Upon update of quantity, show the customer the total cost of the purchase.
+// the quantity checker function isnt working
+// would like to get the "connection end" function put in the correct place 
+// find out how to mask the password
