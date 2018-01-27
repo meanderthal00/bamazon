@@ -24,5 +24,5 @@ From the terminal type the command 'node bamazonCustomer.js.'
 #### MySQL Workbench
 #### JavaScript
 #### Node.js Packages
-    **inquirer npm**
-    **mysql npm** 
+    _inquirer npm_
+    _mysql npm_ 
