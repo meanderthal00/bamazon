@@ -22,7 +22,7 @@ From the terminal type the command 'node bamazonCustomer.js.'
 
 ### Technologies Used:
 #### MySQL Workbench
-#### Node.js Packages
-  *mysql
-  *inquirer
+#### Node.js Packages:
+  mysql
+  inquirer
 #### JavaScript
